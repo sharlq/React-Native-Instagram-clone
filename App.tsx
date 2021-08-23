@@ -1,18 +1,30 @@
 import { StatusBar } from 'expo-status-bar';
 import React,{ Component } from 'react';
+
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native'; 
 import {createStackNavigator} from '@react-navigation/stack';
+
 import LoadingScreen from "./components/auth/Landing";
-import RegisterScreen from './components/auth/Regiter'
+import RegisterScreen from './components/auth/Regiter';
+import LoginScreen from './components/auth/Login';
+import MainScreen from './components/main';
+import AddScreen from './components/main/add';
+
 import './firebaseConfig';
 import firebase from 'firebase';
 
+import {Provider} from 'react-redux';
+import {createStore,applyMiddleware} from 'redux';
+import rootReducer from './redux/reducers/index';
+import thunk from 'redux-thunk'
  
 interface ComponentState{
   loaded: boolean,
   loggedIn?:boolean
 }
+
+const store = createStore(rootReducer,applyMiddleware(thunk))
 
  class App extends Component<any,ComponentState> {
   constructor(props: any){
@@ -24,6 +36,7 @@ interface ComponentState{
 
   componentWillMount() {
     firebase.auth().onAuthStateChanged((user)=>{
+      console.log(user,"WTF")
       if(!user){
         this.setState({
           loggedIn:false,
@@ -47,6 +60,7 @@ interface ComponentState{
         <Stack.Navigator initialRouteName="Landing">
           <Stack.Screen name="Landing" component={LoadingScreen} options={{headerShown:false}}/>
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+          <Stack.Screen name="Login" component={LoginScreen}/>
         </Stack.Navigator>
       </NavigationContainer>
     );}
@@ -58,9 +72,14 @@ interface ComponentState{
       )
     }
     return(
-      <View style={{flex:1,justifyContent:'center'}}>
-      <Text>User is loggedIn</Text>
-    </View>
+      <Provider store={store}>
+        <NavigationContainer>
+        <Stack.Navigator initialRouteName="Main">
+          <Stack.Screen name="Main" component={MainScreen} options={{headerShown:false}}/>
+          <Stack.Screen name="Add" component={AddScreen} />
+        </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
     )
   }
 }
