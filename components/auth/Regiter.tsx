@@ -22,7 +22,15 @@ export class RegisterScreen extends Component<any,ComponentState> {
   onSignUp(){
       const {email,password,name} = this.state;
       firebase.auth().createUserWithEmailAndPassword(email,password)
-      .then((result)=>{console.log(result)})
+      .then((result)=>{
+        firebase.firestore().collection("users")
+        //@ts-ignore
+        .doc(firebase.auth().currentUser.uid)
+        .set({
+          name,
+          email
+        })
+        console.log(result)})
       .catch((error)=>{
         console.log(error)
       })
