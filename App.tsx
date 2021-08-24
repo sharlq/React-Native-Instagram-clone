@@ -34,7 +34,7 @@ const store = createStore(rootReducer,applyMiddleware(thunk))
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     firebase.auth().onAuthStateChanged((user)=>{
       console.log(user,"WTF")
       if(!user){
@@ -49,6 +49,7 @@ const store = createStore(rootReducer,applyMiddleware(thunk))
         })
       }
     })
+ 
   }
 
   render() {

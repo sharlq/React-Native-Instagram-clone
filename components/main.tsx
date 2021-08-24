@@ -19,6 +19,8 @@ export class Main extends Component<any,any> {
         this.props.fetchUser();
     }
     render() {
+        const user = this.props.currentUser;
+        console.log(this.props.currentUser)
         return (
             <Tab.Navigator initialRouteName="Feed" labeled={false}>
             <Tab.Screen name="Feed" component={FeedScreen}
@@ -46,7 +48,7 @@ export class Main extends Component<any,any> {
                 <Tab.Screen name="Profile" component={ProfileScreen}
                 options={{
                     tabBarIcon:(({color})=>
-                        <MaterialCommunityIcons name="account-circule" color={color} size={26}/>
+                        <MaterialCommunityIcons name="account-circle" color={color} size={26}/>
                     )
                 }}
                 />
