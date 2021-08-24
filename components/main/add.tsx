@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity,Button,Image,Platform } from '
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 
-export default function App() {
+ const App:React.FC<{navigation:any}> =({navigation})=> {
   const [hasCameraPermission, setHasCameraPermission] = useState<any>(null);
   const [hasGalleryPermission, setHasGalleryPermission] = useState<any>(false);
   const [camera, setCamera] = useState<any>(null);
@@ -80,6 +80,11 @@ export default function App() {
         onPress={()=>{pickImage()}}
       >
       </Button>
+      <Button
+        title="Save Image"
+        onPress={()=>navigation.navigate('Save',{image})}
+      >
+      </Button>
       {image && <Image
             source={{uri:image}} style={{flex:1}}
       />}
@@ -108,3 +113,5 @@ const styles = StyleSheet.create({
         color:"green",
     }
  }); 
+
+ export default App

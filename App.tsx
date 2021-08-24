@@ -10,6 +10,7 @@ import RegisterScreen from './components/auth/Regiter';
 import LoginScreen from './components/auth/Login';
 import MainScreen from './components/main';
 import AddScreen from './components/main/add';
+import SaveScreen from './components/main/save'
 
 import './firebaseConfig';
 import firebase from 'firebase';
@@ -62,6 +63,7 @@ const store = createStore(rootReducer,applyMiddleware(thunk))
           <Stack.Screen name="Landing" component={LoadingScreen} options={{headerShown:false}}/>
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
           <Stack.Screen name="Login" component={LoginScreen}/>
+          
         </Stack.Navigator>
       </NavigationContainer>
     );}
@@ -77,7 +79,13 @@ const store = createStore(rootReducer,applyMiddleware(thunk))
         <NavigationContainer>
         <Stack.Navigator initialRouteName="Main">
           <Stack.Screen name="Main" component={MainScreen} options={{headerShown:false}}/>
-          <Stack.Screen name="Add" component={AddScreen} />
+          
+          <Stack.Screen name="Add" component={AddScreen}
+          //@ts-ignore
+          navigation={this.props.navigation} />
+          <Stack.Screen name="Save" component={SaveScreen}
+          //@ts-ignore
+          navigation={this.props.navigation} />
         </Stack.Navigator>
         </NavigationContainer>
       </Provider>
