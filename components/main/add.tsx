@@ -36,7 +36,6 @@ import * as ImagePicker from 'expo-image-picker';
       quality: 1,
     });
     
-    console.log(result);
 
     if (!result.cancelled) {
       setImage(result.uri);
