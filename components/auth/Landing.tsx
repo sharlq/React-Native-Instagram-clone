@@ -7,6 +7,9 @@ const Landing:React.FC<{navigation?:any}> = ({navigation}) => {
             <Button
             title="Register"
             onPress={()=>navigation.navigate("RegisterScreen")}/>
+            <Button
+            title="Login"
+            onPress={()=>navigation.navigate("Login")}/>
         </View>
 
 )

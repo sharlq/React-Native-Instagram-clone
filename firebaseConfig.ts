@@ -1,5 +1,5 @@
 import firebase from "firebase";
-import "dotenv/config";
+
 
 import {
   REACT_APP_API_KEY,
@@ -12,7 +12,7 @@ import {
   //@ts-ignore
 } from "@env";
 
-//const result = dotenv.config({path:'./.env'})
+
 
 var firebaseConfig = {
   apiKey: REACT_APP_API_KEY,
