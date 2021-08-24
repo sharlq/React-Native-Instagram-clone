@@ -37,7 +37,6 @@ const store = createStore(rootReducer,applyMiddleware(thunk))
 
   componentDidMount() {
     firebase.auth().onAuthStateChanged((user)=>{
-      console.log(user,"WTF")
       if(!user){
         this.setState({
           loggedIn:false,

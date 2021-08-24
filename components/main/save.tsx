@@ -36,7 +36,6 @@ useEffect(()=>{
       const taskCompleted = () =>{
           task.snapshot.ref.getDownloadURL().then((snapshot:any)=>{
             savePostDate(snapshot);
-            console.log(snapshot)
           })
       }
 
