@@ -8,9 +8,7 @@ export function fetchUser(){
         .doc(firebase.auth().currentUser?.uid)
         .get()
         .then((snapshot)=>{
-                console.log("this should give the current user1",snapshot)
                 if(snapshot.exists){
-                        console.log("this should give the current user",snapshot.data())
                         dispatch({type:USER_STATE_CHANGE,currentUser:snapshot.data()})
                 }
         }).catch((err)=>console.log("WTF BRP",err))
@@ -34,7 +32,6 @@ export function fetchUserPosts(){
                             return{id,...data}
                     })
                     dispatch({type:USER_POST_STATE_CHANGE,posts})
-                    console.log(posts)
             })
     
             })

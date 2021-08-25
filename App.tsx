@@ -59,7 +59,7 @@ const store = createStore(rootReducer,applyMiddleware(thunk))
     return (
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Landing">
-          <Stack.Screen name="Landing" component={LoadingScreen} options={{headerShown:false}}/>
+          <Stack.Screen name="Landing" component={LoadingScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
           <Stack.Screen name="Login" component={LoginScreen}/>
           
