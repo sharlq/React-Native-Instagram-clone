@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { View, Text, Image, FlatList, StyleSheet } from "react-native";
+import { View, Text, Image, FlatList, StyleSheet,Button } from "react-native";
 import { connect } from "react-redux";
 import firebase from "firebase";
 import 'firebase/firestore';
@@ -7,7 +7,8 @@ import 'firebase/firestore';
 const Profile: React.FC<any> = (props) => {
   const [userPosts,setUserPosts] =useState<any>(null)
   const [user,setUser] =useState<any>(null)
-  console.log(props)
+  const [following, setFollowing] = useState<any>(null)
+
   useEffect(() =>{
     const {currentUser,posts} = props
     //@ts-ignore
@@ -21,9 +22,9 @@ const Profile: React.FC<any> = (props) => {
       .get()
       .then((snapshot)=>{
               if(snapshot.exists){
-                     setUser(snapshot.data)
+                     setUser(snapshot.data())
               }
-      }).catch((err)=>console.log("WTF BRP",err))
+      }).catch((err)=>console.log("WTF",err))
 
       firebase.firestore()
             .collection("posts")
@@ -43,10 +44,35 @@ const Profile: React.FC<any> = (props) => {
 
 
     }
+    console.log(props.following,props.route.params.uid,props.following.indexOf(props.route.params.uid))
+    if(props.following.indexOf(props.route.params.uid)==-1){
+      setFollowing(false);
+    }else{
+      setFollowing(true)
+    }
 
-  },[props.route.params.uid])
+  },[props.route.params.uid,props.following])
 
-  if(user===null){
+  const onFollow = () =>{
+    firebase.firestore()
+    .collection("following")
+    //@ts-ignore
+    .doc(firebase.auth().currentUser.uid)
+    .collection("userFollowing")
+    .doc(props.route.params.uid)
+    .set({})
+  }
+
+  const onUnFollow = () =>{
+    firebase.firestore()
+    .collection("following")
+    //@ts-ignore
+    .doc(firebase.auth().currentUser.uid)
+    .collection("userFollowing")
+    .doc(props.route.params.uid)
+    .delete()
+  }
+  if(user==null){
     return( <View/>)
   }
   return (
@@ -54,6 +80,25 @@ const Profile: React.FC<any> = (props) => {
       <View style={styles.containerInfo}>
         <Text>{user.name}</Text>
         <Text>{user.email}</Text>
+        {//@ts-ignore
+        props.route.params.uid!==firebase.auth().currentUser.uid
+          ?(
+            <View>
+              {
+                following
+                ?(<Button
+                  title="Following"
+                  onPress={()=> onUnFollow()}
+                />)
+                :(<Button
+                  title="Follow"
+                  onPress={()=> onFollow()}
+                />)
+              }
+            </View>
+          )
+          :null
+      }
       </View>
 
       <View style={styles.containerGallery}>
@@ -90,12 +135,13 @@ const styles = StyleSheet.create({
   },
 });
 const mapStateToProps = (store: {
-  userState: { currentUser: any; posts: any };
+  userState: { currentUser: any; posts: any,following:any };
 }) => {
   console.log("store", store);
   return {
     currentUser: store.userState.currentUser,
     posts: store.userState.posts,
+    following: store.userState.following
   };
 };
 export default connect(mapStateToProps, null)(Profile);

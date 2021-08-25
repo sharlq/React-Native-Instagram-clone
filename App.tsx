@@ -36,6 +36,7 @@ const store = createStore(rootReducer,applyMiddleware(thunk))
   }
 
   componentDidMount() {
+   // firebase.auth().signOut()
     firebase.auth().onAuthStateChanged((user)=>{
       if(!user){
         this.setState({
