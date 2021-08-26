@@ -1,10 +1,11 @@
-import { USERS_POSTS_STATE_CHANGE, USERS_DATA_STATE_CHANGE } from "../constants"
+import { USERS_POSTS_STATE_CHANGE, USERS_DATA_STATE_CHANGE,USERS_LIKES_STATE_CHANGE } from "../constants"
 
 const initialState = {
     users:[],
+    feed:[],
     usersFollowingLoaded:0
 }
-export const users = (state=initialState,action: { type:string,user: any,posts:any,following:any,uid:string })=>{
+export const users = (state=initialState,action:any)=>{
     switch(action.type){
         case USERS_DATA_STATE_CHANGE:
         return {
@@ -15,12 +16,16 @@ export const users = (state=initialState,action: { type:string,user: any,posts:a
             return {
                 ...state,
                 usersFollowingLoaded: state.usersFollowingLoaded + 1,
-                users:state.users.map(
-                    (user:any)=>
-                    user.uid===action.uid?
-                    {user,posts:action.posts}:
-                    user
-                    )
+                feed:[...state.feed,...action.posts]
+            }
+        
+        case USERS_LIKES_STATE_CHANGE:
+            return {
+                ...state,
+                feed:state.feed.map((post:any)=>post.id== action.postId?
+                    {...post,currentUserLike:action.currentUserLike}
+                    :post
+                )
             }
 
         default:
