@@ -10,7 +10,8 @@ import RegisterScreen from './components/auth/Regiter';
 import LoginScreen from './components/auth/Login';
 import MainScreen from './components/main';
 import AddScreen from './components/main/add';
-import SaveScreen from './components/main/save'
+import SaveScreen from './components/main/save';
+import CommentScreen from './components/main/comments';
 
 import './firebaseConfig';
 import firebase from 'firebase';
@@ -84,6 +85,9 @@ const store = createStore(rootReducer,applyMiddleware(thunk))
           //@ts-ignore
           navigation={this.props.navigation} />
           <Stack.Screen name="Save" component={SaveScreen}
+          //@ts-ignore
+          navigation={this.props.navigation} />
+          <Stack.Screen name="Comment" component={CommentScreen}
           //@ts-ignore
           navigation={this.props.navigation} />
         </Stack.Navigator>

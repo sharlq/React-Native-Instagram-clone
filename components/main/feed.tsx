@@ -10,8 +10,9 @@ const Feed: React.FC<any> = (props) => {
 
   useEffect(() =>{
     let posts: any[] = [];
-    if(props.usersLoaded==props.following.length){
+    if(props.usersFollowingLoaded==props.following.length){
         for(let i=0 ; i<props.following.length ; i++){
+            console.log(props.users,"are we dont have useres now")
             const user = props.users.find((el:any)=> el.user.uid===props.following[i]);
             if(user!=undefined){
                 console.log("are you stupid user",user)
@@ -22,7 +23,7 @@ const Feed: React.FC<any> = (props) => {
         setUserPosts(posts)
     }
     console.log(posts,props.users)
-  },[props.usersLoaded])
+  },[props.usersFollowingLoaded])
 
   const onFollow = () =>{
     firebase.firestore()
@@ -58,6 +59,9 @@ const Feed: React.FC<any> = (props) => {
             <View style={styles.containerImage}>
             <Text style={styles.container}>{item.user.name}</Text>
             <Image style={styles.image} source={{ uri: item.downLoadURL }} />
+            <Text
+                onPress={()=>props.navigation.navigate('Comment',{postId:item.id,uid:item.user.uid})}
+            >View Comments</Text>
             </View>
           )}
         />
@@ -94,7 +98,7 @@ const mapStateToProps = (store: {
     currentUser: store.userState.currentUser,
     following: store.userState.following,
     users: store.usersState.users,
-    usersLoaded:store.usersState.usersLoaded,
+    usersFollowingLoaded:store.usersState.usersFollowingLoaded,
 
   };
 };
