@@ -72,6 +72,10 @@ const Profile: React.FC<any> = (props) => {
     .doc(props.route.params.uid)
     .delete()
   }
+
+  const onSignOut =()=>{
+    firebase.auth().signOut()
+  }
   if(user==null){
     return( <View/>)
   }
@@ -80,6 +84,7 @@ const Profile: React.FC<any> = (props) => {
       <View style={styles.containerInfo}>
         <Text>{user.name}</Text>
         <Text>{user.email}</Text>
+
         {//@ts-ignore
         props.route.params.uid!==firebase.auth().currentUser.uid
           ?(
@@ -97,7 +102,11 @@ const Profile: React.FC<any> = (props) => {
               }
             </View>
           )
-          :null
+          :
+          <Button
+          title="Log Out"
+          onPress={()=>onSignOut()}
+          />
       }
       </View>
 

@@ -81,7 +81,10 @@ import * as ImagePicker from 'expo-image-picker';
       </Button>
       <Button
         title="Save Image"
-        onPress={()=>navigation.navigate('Save',{image})}
+        onPress={()=>{
+           if(image){
+             return navigation.navigate('Save',{image})
+            }}}
       >
       </Button>
       {image && <Image
