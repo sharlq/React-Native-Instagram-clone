@@ -1,67 +1,87 @@
-import React,{useState,useEffect} from "react";
-import { View, Text, Image, FlatList, StyleSheet,Button } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, Image, FlatList, StyleSheet, Button } from "react-native";
 import { connect } from "react-redux";
 import firebase from "firebase";
-import 'firebase/firestore';
+import "firebase/firestore";
 
 const Feed: React.FC<any> = (props) => {
-  const [userPosts,setUserPosts] =useState<any>(null)
+  const [userPosts, setUserPosts] = useState<any>(null);
 
-
-  useEffect(() =>{
+  useEffect(() => {
     let posts: any[] = [];
-    if(props.usersFollowingLoaded==props.following.length){
-        for(let i=0 ; i<props.following.length ; i++){
-            console.log(props.users,"are we dont have useres now")
-            const user = props.users.find((el:any)=> el.user.uid===props.following[i]);
-            if(user!=undefined){
-                console.log("are you stupid user",user)
-                posts=[...posts,...user.posts]
-            }
-        }
-        posts.sort((x,y)=>x.creation - y.creation)
-        setUserPosts(posts)
+    if (
+      props.usersFollowingLoaded == props.following.length &&
+      props.following.length !== 0
+    ) {
+      props.feed.sort(
+        (x: { creation: number }, y: { creation: number }) =>
+          x.creation - y.creation
+      );
+      setUserPosts(posts);
     }
-    console.log(posts,props.users)
-  },[props.usersFollowingLoaded])
+  }, [props.usersFollowingLoaded, props.feed]);
 
-  const onFollow = () =>{
-    firebase.firestore()
-    .collection("following")
-    //@ts-ignore
-    .doc(firebase.auth().currentUser.uid)
-    .collection("userFollowing")
-    .doc(props.route.params.uid)
-    .set({})
-  }
+  const onLikePress = (uid: string, postId: string) => {
+    firebase
+      .firestore()
+      .collection("posts")
+      .doc(uid)
+      .collection("userPosts")
+      .doc(postId)
+      .collection("likes")
+      //@ts-ignore
+      .doc(firebase.auth().currentUser.uid)
+      .set({});
+  };
 
-  const onUnFollow = () =>{
-    firebase.firestore()
-    .collection("following")
-    //@ts-ignore
-    .doc(firebase.auth().currentUser.uid)
-    .collection("userFollowing")
-    .doc(props.route.params.uid)
-    .delete()
-  }
-//   if(user==null){
-//     return( <View/>)
-//   }
+  const onDislikePress = (uid: string, postId: string) => {
+    firebase
+      .firestore()
+      .collection("posts")
+      .doc(uid)
+      .collection("userPosts")
+      .doc(postId)
+      .collection("likes")
+      //@ts-ignore
+      .doc(firebase.auth().currentUser.uid)
+      .delete();
+  };
+
+  //   if(user==null){
+  //     return( <View/>)
+  //   }
   return (
     <View style={styles.container}>
       <View style={styles.containerGallery}>
         <FlatList
-       
           numColumns={1}
           horizontal={false}
           data={userPosts}
           renderItem={({ item }) => (
             <View style={styles.containerImage}>
-            <Text style={styles.container}>{item.user.name}</Text>
-            <Image style={styles.image} source={{ uri: item.downLoadURL }} />
-            <Text
-                onPress={()=>props.navigation.navigate('Comment',{postId:item.id,uid:item.user.uid})}
-            >View Comments</Text>
+              <Text style={styles.container}>{item.user.name}</Text>
+              <Image style={styles.image} source={{ uri: item.downLoadURL }} />
+              {item.currentUserLike ? (
+                <Button
+                  title="Dislike"
+                  onPress={() => onDislikePress(item.user.uid, item.id)}
+                />
+              ) : (
+                <Button
+                  title="Like"
+                  onPress={() => onLikePress(item.user.uid, item.id)}
+                />
+              )}
+              <Text
+                onPress={() =>
+                  props.navigation.navigate("Comment", {
+                    postId: item.id,
+                    uid: item.user.uid,
+                  })
+                }
+              >
+                View Comments
+              </Text>
             </View>
           )}
         />
@@ -78,28 +98,25 @@ const styles = StyleSheet.create({
   containerInfo: {
     margin: 10,
   },
-  containerGallery: {
-      
-  },
+  containerGallery: {},
   image: {
     flex: 1,
     aspectRatio: 1 / 1,
   },
-  containerImage:{
-    flex:1,
+  containerImage: {
+    flex: 1,
   },
 });
 const mapStateToProps = (store: {
-  userState: { currentUser: any; posts: any,following:any };
-  usersState:any
+  userState: { currentUser: any; posts: any; following: any };
+  usersState: any;
 }) => {
-  console.log("store", store);
   return {
     currentUser: store.userState.currentUser,
     following: store.userState.following,
     users: store.usersState.users,
-    usersFollowingLoaded:store.usersState.usersFollowingLoaded,
-
+    usersFollowingLoaded: store.usersState.usersFollowingLoaded,
+    feed: store.usersState.feed,
   };
 };
 export default connect(mapStateToProps, null)(Feed);
