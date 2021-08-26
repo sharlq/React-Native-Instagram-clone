@@ -1,8 +1,8 @@
 import React,{useState} from "react";
-import { View, Text, TextInput, FlatList,TouchableOpacity } from "react-native";
+import { View, Text, TextInput, FlatList,TouchableOpacity,StyleSheet } from "react-native";
 import firebase from "firebase";
 import 'firebase/firestore'
-import { Props } from "react";
+
 
 const Search:React.FC<{navigation:any}> = ({navigation}) => {
     const [users,setUsers] = useState<any>();
@@ -20,11 +20,14 @@ const Search:React.FC<{navigation:any}> = ({navigation}) => {
         setUsers(dbUsers);
         })
     }
-  return (<View>
+  return (
+  <View>
+      <View style={styles.container}/>
       <TextInput 
       placeholder="Search here"
       onChangeText={(search)=>fetchUsers(search)}
       />
+      
       <FlatList
       numColumns={1}
       horizontal={false}
@@ -39,5 +42,11 @@ const Search:React.FC<{navigation:any}> = ({navigation}) => {
       />
   </View>)
 };
+
+const styles = StyleSheet.create({
+    container: {
+        height:50
+    }
+})
 
 export default Search;

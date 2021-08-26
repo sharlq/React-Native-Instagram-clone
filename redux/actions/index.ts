@@ -63,13 +63,13 @@ export function fetchUserFollowing() {
         });
         dispatch({ type: USER_FOLLOWING_STATE_CHANGE, following });
         for(let i =0 ; i < following.length ; i++ ){
-                dispatch(fetchUsersData(following[i])); 
+                dispatch(fetchUsersData(following[i],true)); 
         }
       });
   };
 }
 
-export function fetchUsersData(uid: string) {
+export function fetchUsersData(uid: string,getPosts:boolean=false) {
   return (dispatch: any, getState: any) => {
     const found = getState().usersState.users.some((el: any) => el.uid === uid);
     if (!found) {
@@ -79,16 +79,19 @@ export function fetchUsersData(uid: string) {
         .doc(uid)
         .get()
         .then((snapshot) => {
+                let user: any = snapshot.data();
+                user.uid = snapshot.id;
           if (snapshot.exists) {
-            let user: any = snapshot.data();
-            user.uid = snapshot.id;
             dispatch({ type: USERS_DATA_STATE_CHANGE, user });
-
             dispatch(fetchUsersFollowingPosts(user.uid))
           } else {
             console.log("dosent exist");
           }
+
         });
+        if(getPosts){
+                dispatch(fetchUsersFollowingPosts(uid))
+        }
     }
   };
 }
